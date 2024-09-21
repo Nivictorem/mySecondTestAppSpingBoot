@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Request {
     @NotBlank
-    @Size(max = 32)
+    @Size(max = 33)
     private String uid;
     @NotBlank
     @Size(max = 32)
