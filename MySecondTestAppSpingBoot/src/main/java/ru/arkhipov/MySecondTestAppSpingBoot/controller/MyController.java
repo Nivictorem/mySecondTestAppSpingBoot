@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.arkhipov.MySecondTestAppSpingBoot.exception.UnsupportedCodeException;
 import ru.arkhipov.MySecondTestAppSpingBoot.exception.ValidationFailedException;
 import ru.arkhipov.MySecondTestAppSpingBoot.model.*;
-import ru.arkhipov.MySecondTestAppSpingBoot.service.ModifyResponseService;
-import ru.arkhipov.MySecondTestAppSpingBoot.service.ModifySystemTimeResponseService;
-import ru.arkhipov.MySecondTestAppSpingBoot.service.ValidationService;
+import ru.arkhipov.MySecondTestAppSpingBoot.service.*;
 import ru.arkhipov.MySecondTestAppSpingBoot.util.DateTimeUtil;
 
 import java.text.SimpleDateFormat;
@@ -26,12 +24,18 @@ import java.util.Date;
 public class MyController {
     private final ValidationService validationService;
     private final ModifyResponseService modifyResponseService;
+    //private final ModifyRequestService modifyRequestService;
+    private final ModifyRequestService modifySourceRequestService;
     @Autowired
     public MyController(ValidationService validationService,
-                        @Qualifier("ModifySystemTimeResponseService")ModifySystemTimeResponseService modifySystemTimeResponseService)
+                        @Qualifier("ModifySystemTimeResponseService")ModifyResponseService modifySystemTimeResponseService,
+                        //ModifyRequestService modifyRequestService,
+                        @Qualifier("ModifySourceRequestService")ModifyRequestService modifySourceRequestService)
     {
         this.validationService = validationService;
         this.modifyResponseService = modifySystemTimeResponseService;
+        //this.modifyRequestService = modifyRequestService;
+        this.modifySourceRequestService = modifySourceRequestService;
     }
     @PostMapping(value = "/feedback")
     public ResponseEntity<Response> feedback(@Valid @RequestBody Request request,
@@ -71,6 +75,8 @@ public class MyController {
             return  new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         modifyResponseService.modify(response);
+        //modifyRequestService.modify(request);
+        modifySourceRequestService.modify(request);
         log.info("response: {}",response);
         return new ResponseEntity<>(modifyResponseService.modify(response), HttpStatus.OK);
     }
